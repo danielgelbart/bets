@@ -41,3 +41,5 @@ gem 'spring',        group: :development
 # gem 'debugger', group: [:development, :test]
 
 gem 'nokogiri'
+
+gem 'dm-metamapper', path: "../../rankabove/dm-metamapper", require: false

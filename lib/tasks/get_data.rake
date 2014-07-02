@@ -57,12 +57,19 @@ namespace :get_data do
   task :fights => :environment do |task, args|
 
     # Consider passing this as a parameter
-    url ="http://www.sherdog.com/fighter/Forrest-Griffin-3526"
+    url ="http://www.sherdog.com/fighter/Chris-Weidman-42804"
 
     log = File.new("fights_rake.log","w+")
 
     spider = Spider.new(log)
     spider.get_recursive(url)
+
+    for_delete = Fighter.where( for_delet: true)
+
+    for_delete.each do |f|
+      puts "Deleting #{f.name} due to few fights"
+      f.destroy
+    end
 
     log.close
   end # task
@@ -91,7 +98,7 @@ class Spider
   def get_recursive(url)
     log.puts "get_recursive called with url: #{url}"
 
-    if Spider.count > 1000
+    if Spider.count > 500
       puts "Reached run limit of 1000 at #{url}"
       log.puts "Reached run limit of 1000 at #{url}"
       return
@@ -123,12 +130,14 @@ class Spider
     # recursion base
     # Let's NOT get all fights for this fighter if he has less than 6 fights
     # We will use him to spider the other fighters
+    delete_fighter = false
     if num_fights < 6
-      puts "Not getting data, since #{fighter_name} has too few fights"
-      return
+      puts "#{fighter_name} has too few fights to persist to DB"
+      delete_fighter = true
     end
 
     fighter = Fighter.find_or_create_by(name: fighter_name)
+
 
     if fighter.url.nil?
       fighter.url = url
@@ -159,6 +168,15 @@ class Spider
     fighter.full_data = true
     fighter.save
 
+    # This fighter has to few fights, but we already got the data about him,
+    # So we will save it, but delete him when we are done
+    if delete_fighter
+      log.puts puts "Marking #{fighter_name} for Delete"
+      fighter.for_delete = delete_fighter
+      fighter.save
+      return
+    end
+
     # Iterate over fights and make recursive call
     fight_records.each do |fight_rec|
       get_recursive(extract_url(fight_rec))
@@ -183,12 +201,19 @@ class Spider
     oponent_name = cols[1].text.strip
 
     oponent = Fighter.find_by_name(oponent_name)
+    uf = Fighter.find_by_name("Unranked Fighter")
 
     count_records = true
     if !oponent.nil?
       if oponent.fights.size > 5
         count_records = false
         puts "oponent #{oponent.name} has more than 5 fights"
+      else
+        if oponent.full_data
+          count_records = false
+          log.puts puts "Replacing UNRANKED with #{oponent.name} to reduce DB"
+          oponent = uf
+        end
       end
     end
 

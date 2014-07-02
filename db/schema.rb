@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140701205722) do
+ActiveRecord::Schema.define(version: 20140702123359) do
 
   create_table "fighters", force: true do |t|
     t.string   "name"
@@ -19,6 +19,7 @@ ActiveRecord::Schema.define(version: 20140701205722) do
     t.datetime "updated_at"
     t.boolean  "full_data",  default: false
     t.string   "url"
+    t.boolean  "for_delete", default: false
   end
 
   add_index "fighters", ["name"], name: "index_fighters_on_name", using: :btree

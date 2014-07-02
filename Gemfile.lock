@@ -1,3 +1,8 @@
+PATH
+  remote: ../../rankabove/dm-metamapper
+  specs:
+    dm-metamapper (0.3.3)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -117,6 +122,7 @@ PLATFORMS
 
 DEPENDENCIES
   coffee-rails (~> 4.0.0)
+  dm-metamapper!
   jbuilder (~> 2.0)
   jquery-rails
   mysql

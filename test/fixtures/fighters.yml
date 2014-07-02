@@ -7,6 +7,8 @@
 #  created_at :datetime
 #  updated_at :datetime
 #  full_data  :boolean          default(FALSE)
+#  url        :string(255)
+#  for_delete :boolean          default(FALSE)
 #
 
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
