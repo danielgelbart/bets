@@ -10,31 +10,6 @@ namespace :get_data do
 
     uf = Fighter.find_by_name("Unranked Fighter")
 
-    fits = Fighter.all
-    fulfits = fits.select{ |f| f.has_full_data? }
-    lilfits = fulfits.select{ |f| f.fights.size < 2 }
-    lilfits.each do |f|
-      # Replace fights with 'Unranked Fighter'
-      f.wins.each do |w|
-        w.winner = uf
-        w.save
-      end
-      f.loses.each do |l|
-        l.loser = uf
-        l.save
-      end
-      puts "Deleting fighter #{f.name}"
-    end
-
-    lilfits.map{ |f| f.destroy }
-  end
-
-  # TODO unifiy this with 'clean' task
-  desc "Repmove fights between 'Unranked Fighters'"
-  task :clean_fights => :environment do |task, args|
-
-    uf = Fighter.find_by_name("Unranked Fighter")
-
     fights = Fight.all
 
     u_fights = []
@@ -51,6 +26,24 @@ namespace :get_data do
 
     puts "Deleting #{ u_fights.size } fights between Unranked Fighters"
     u_fights.map{ |f| f.destroy }
+
+    fits = Fighter.all
+    fulfits = fits.select{ |f| f.has_full_data? }
+    lilfits = fulfits.select{ |f| f.fights.size < 5 }
+    lilfits.each do |f|
+      # Replace fights with 'Unranked Fighter'
+      f.wins.each do |w|
+        w.winner = uf
+        w.save
+      end
+      f.loses.each do |l|
+        l.loser = uf
+        l.save
+      end
+      puts "Deleting fighter #{f.name}"
+    end
+
+    lilfits.map{ |f| f.destroy }
   end
 
   desc "Update fighters from upcoming fight card"
@@ -62,7 +55,7 @@ namespace :get_data do
   task :fights => :environment do |task, args|
 
     # Consider passing this as a parameter
-    url ="http://www.sherdog.com/fighter/Bruno-Santos-48052"
+    url ="http://www.sherdog.com/fighter/Rob-Font-76100"
 
     log = File.new("fights_rake.log","w+")
 
