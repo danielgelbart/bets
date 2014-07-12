@@ -14,7 +14,7 @@ public:
     static RunInfo* instance() { return _this; }
     std::string basePath() const { return _basePath; } 
     std::string mirrorsDir() const;
-    std::string mirrorDir(const DMMM::I_Account accountId) const;
+    //std::string mirrorDir(const DMMM::I_Account accountId) const;
     std::string sitemapsDir() const;
 
 private:  

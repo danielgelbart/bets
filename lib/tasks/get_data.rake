@@ -10,23 +10,7 @@ namespace :get_data do
 
     uf = Fighter.find_by_name("Unranked Fighter")
 
-    fights = Fight.all
-
-    u_fights = []
-    fights.each do |f|
-
-      if f.winner == uf && f.loser == uf
-        u_fights << f
-      end
-
-      if f.winner == nil || f.loser == nil
-        u_fights << f
-      end
-    end
-
-    puts "Deleting #{ u_fights.size } fights between Unranked Fighters"
-    u_fights.map{ |f| f.destroy }
-
+    # Get rid of fighters with few fights, replace them with "Unranked Fighter"
     fits = Fighter.all
     fulfits = fits.select{ |f| f.has_full_data? }
     lilfits = fulfits.select{ |f| f.fights.size < 5 }
@@ -44,6 +28,28 @@ namespace :get_data do
     end
 
     lilfits.map{ |f| f.destroy }
+
+    # Now remove anny unneeded fight records
+    fights = Fight.all
+    uf_fights = 0
+    ni_fights = 0
+    u_fights = []
+    fights.each do |f|
+
+      if f.winner == uf && f.loser == uf
+        u_fights << f
+        uf_fights += 1
+      end
+
+      if f.winner == nil || f.loser == nil
+        u_fights << f
+        ni_fights += 1
+      end
+    end
+
+    puts "Deleting #{ uf_fights} fights between Unranked Fighters, and #{ni_fights} fights where the fighter id was nil"
+    u_fights.map{ |f| f.destroy }
+
   end
 
   desc "Update fighters from upcoming fight card"
@@ -51,11 +57,26 @@ namespace :get_data do
 
   end
 
+  desc "Try to mark as full full data fighters"
+  task :mark_full => :environment do |task, args|
+    non_full_fighters = Fighter.where( full_data: false)
+    log = File.new("mark_full.log","w+")
+    spider = Spider.new(log)
+
+    non_full_fighters.each do |f|
+      if !f.url.nil?
+        spider.get_recursive(f.url)
+      end
+    end
+    log.close
+  end
+
+
   desc "Populate database with fight records"
   task :fights => :environment do |task, args|
 
     # Consider passing this as a parameter
-    url ="http://www.sherdog.com/fighter/Rob-Font-76100"
+    url ="http://www.sherdog.com/fighter/Stefan-Struve-15063"
 
     log = File.new("fights_rake.log","w+")
 
@@ -96,12 +117,12 @@ class Spider
   def get_recursive(url)
     log.puts "get_recursive called with url: #{url}"
 
-    if Spider.count > 500
-      puts "Reached run limit of 1000 at #{url}"
-      log.puts "Reached run limit of 1000 at #{url}"
+    lim = 100
+    if Spider.count > lim
+      log.puts puts "Reached run limit of #{lim} at #{url}"
       return
     else
-      Spider.add_to_count
+      puts "This is the #{ Spider.add_to_count }th recursive call"
     end
 
     fighter_name = extract_fighter_name(url)

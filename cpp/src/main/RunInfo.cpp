@@ -16,14 +16,6 @@ RunInfo::mirrorsDir() const
     return mirrorPath.string();
 }
 
-string 
-RunInfo::mirrorDir(const DMMM::I_Account accountId) const
-{
-    path mirrorPath = path(mirrorsDir()) / path(accountId.to_s());
-    return mirrorPath.string();
-}
-
-
 string
 RunInfo::sitemapsDir() const
 {
