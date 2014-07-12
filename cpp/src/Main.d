@@ -23,4 +23,7 @@ Main.o Main.d : main/Main.cpp utils/Identifier.h utils/Config.h utils/Utils.hpp 
  /usr/include/mysql++/stream2string.h /usr/include/mysql++/sqlstream.h \
  /usr/include/mysql++/transaction.h /usr/include/mysql++/insertpolicy.h \
  /usr/include/mysql++/scopedconnection.h /usr/include/mysql++/sql_types.h \
- dmmm/dmmm_id.hpp
+ dmmm/dmmm_id.hpp dmmm/dmmm_identifiers.hpp dmmm/T_Fighter.hpp \
+ dmmm/O_Fighter.hpp dmmm/dmmm_utils.hpp dmmm/dmmm_dbface.h \
+ dmmm/dmmm_identifiers.hpp dmmm/dmmm_fields.hpp dmmm/dmmm_comparators.hpp \
+ dmmm/T_Fight.hpp dmmm/O_Fight.hpp dmmm/T_Fighter.hpp dmmm/T_Fight.hpp

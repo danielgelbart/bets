@@ -31,12 +31,6 @@ public:
         _constraint._cond = "(fights.winner_id = " + parentId.to_s() + ")";
     } 
  
-    T_Fight(const I_Fighter& parentId)
-    {
-        _tables.push_back("fights");
-        
-        _constraint._cond = "(fights.loser_id = " + parentId.to_s() + ")";
-    } 
     
     struct E_id{
         E_id() 

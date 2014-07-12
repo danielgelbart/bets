@@ -9,9 +9,6 @@
 #include "dmmm_fields.hpp"
 #include "dmmm_comparators.hpp"
 #include "T_Fight.hpp"
-#include "T_Fight.hpp"
-
-
 
 namespace DMMM {
 

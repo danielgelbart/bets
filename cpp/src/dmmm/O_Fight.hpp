@@ -8,7 +8,7 @@
 #include "dmmm_identifiers.hpp"
 #include "dmmm_fields.hpp"
 #include "dmmm_comparators.hpp"
-
+#include "T_Fighter.hpp"
 
 
 namespace DMMM {
@@ -19,9 +19,6 @@ public:
     O_Fight() {}
     O_Fight(const I_Fighter& parent_id) 
         : _f_winner_id(parent_id)
-        {}
-    O_Fight(const I_Fighter& parent_id) 
-        : _f_loser_id(parent_id)
         {}
 
 O_Fight(const I_Fight& id) 

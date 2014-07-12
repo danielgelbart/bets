@@ -11,9 +11,9 @@
 #include "Logger.h"
 #include "dmmm_dbface.h"
 
-//#include "T_Fight.hpp"
-//#include "T_Fighter.hpp"
-
+#include "T_Fighter.hpp"
+#include "T_Fight.hpp"
+#include <apop.h>
 
 using namespace DMMM;
 using namespace boost::filesystem;
@@ -55,11 +55,25 @@ dirFor(const path& logDir)
 }
 
 void
-run_mle()
+run_mle(void)
 {
-// set up observed data
+/*    apop_model *est = apop_estimate("data", apop_probit);
+    int status = 0 apop_data_get(est->info, .rowname="status");
+    if (status){
+        //trouble
+    }else{
+        //optimum found
+    }
+//    apop_data *data = apop_text_to_data("data",'n','y');
+// here we have a populated apop_data
+//    apop_model *est = apop_estimate(data, apop_ols);
+    apop_model_show(est);
+*/
+
+// set up observed data 
     cout << "Running MLE - NOT implemented yet"<< endl;
 // run mle
+
 
 // do something with results
 
