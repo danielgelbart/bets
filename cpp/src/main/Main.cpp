@@ -58,8 +58,32 @@ dirFor(const path& logDir)
 
 
 void
-run_mle(void)
+run_mle(int argc, char* argv[])
 {
+
+    // initialize R
+    RInside R(argc, argv); 
+    R["txt"] = "Hello, world!\n"; // assign a char* (string) to 'txt'
+    R.parseEvalQ("cat(txt)");  
+
+
+    // load BradleyTerry library
+    // load data to R object
+    // Run the MLE
+    // Do something with results
+
+    std::string str = 
+        "cat('Requireing libraray\n');library('BradleyTerry2'); "
+        "cat('Loading data from file\n'); data <- read.table('data') ; "
+        "cat('Running BTm()\n');fighterModel <- BTm(cbind(win1, win2), fighter1, fighter2, ~ fighter, id='fighter', data=data) ; "
+        "BTabilities(fighterModel)"; // returns a matrix of two colums: fighter; ability
+    
+    Rcpp::NumericMatrix m = R.parseEval(str);   // eval string, return value then as signed to num. vec              
+
+    for (int i=0; i< m.nrow(); i++) { 
+        cout << "Figher " << i << " has skill " << m(i,0) << endl;
+    }
+    cout << endl;
 
 }
 
@@ -113,11 +137,8 @@ mainMain(int argc, char* argv[])
         LOG_ERROR << "unknown command: " << command;
     }
 
-    RInside R(argc, argv); 
-    R["txt"] = "Hello, world!\n";	// assign a char* (string) to 'txt'
 
-    R.parseEvalQ("cat(txt)");  
-    run_mle();
+    run_mle(argc,argv);
 
     LOG_INFO << "deleting Config";
     delete config;

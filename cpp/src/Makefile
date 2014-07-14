@@ -19,7 +19,6 @@ RCPPFLAGS := 		$(shell $(R_HOME)/bin/R CMD config --cppflags)
 ## compiler etc settings used in default make rules
 CXX := 			$(shell $(R_HOME)/bin/R CMD config CXX)
 CPPFLAGS := 		-Wall $(shell $(R_HOME)/bin/R CMD config CPPFLAGS)
-
 ## ------------End of shit needed for R --------------------------------------
 
 include_dirs = -I include -I dmmm -I utils -I /usr/include/mysql -I /usr/include/mysql++/ -I /usr/include/boost -I/usr/share/R/include -I/usr/local/lib/R/site-library/Rcpp/include -I/usr/local/lib/R/site-library/RInside/include 
