@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  fighterA: 1
+  fighterB: 1
+  winA: 1
+  winB: 1
+
+two:
+  fighterA: 1
+  fighterB: 1
+  winA: 1
+  winB: 1

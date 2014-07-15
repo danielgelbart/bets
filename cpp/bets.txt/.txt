@@ -1,0 +1,6 @@
+2014-Jul-14 21:48:54Logger up
+
+2014-Jul-14 21:48:54 INFO 3MB PID 176 Main.cpp:mainMain() --- Analysing data 0.0
+2014-Jul-14 21:48:54 INFO 3MB PID 176 Main.cpp:mainMain() --- Command line arguments: ./mmath
+2014-Jul-14 21:48:57 INFO 106MB PID 176 Main.cpp:mainMain() --- deleting Config
+2014-Jul-14 21:48:57 INFO 106MB PID 176 Main.cpp:mainMain() --- Last log message: deleting Logger

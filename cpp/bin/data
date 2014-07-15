@@ -5,3 +5,7 @@ fighter1 fighter2 win1 win2
 4 D C 0 2
 5 B D 1 0
 6 C A 1 2
+7 B C 1 0
+8 E A 1 1
+9 E D 1 0
+10 B E 0 2

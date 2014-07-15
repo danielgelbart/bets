@@ -18,6 +18,13 @@ class Fighter < ActiveRecord::Base
   has_many :wins, foreign_key: 'winner_id', class_name: 'Fight'
   has_many :loses, foreign_key: 'loser_id', class_name: 'Fight'
 
+  has_many :wlrecordsA, foreign_key: 'FighterA_id', class_name: 'WinLossRecord'
+  has_many :wlrecordsB, foreign_key: 'FighterB_id', class_name: 'WinLossRecord'
+
+  def wlrecords
+    wlrecordsA + wlrecordsB
+  end
+
   def fights
     wins + loses
   end
