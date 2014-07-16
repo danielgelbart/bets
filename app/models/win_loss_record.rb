@@ -32,7 +32,11 @@ class WinLossRecord < ActiveRecord::Base
 
 
   def self.get_record(fa, fb)
-    rec = where( fighterA_id:fa, fighterB_id:fb)
-    rec = where( fighterB_id:fa, fighterA_id:fb) if rec.id.nil?
+    rec = where( fighterA_id: fa.id, fighterB_id: fb.id)
+    rec = where( fighterB_id: fa.id, fighterA_id: fb.id) if rec == []
+    if(rec.size > 2)
+      puts "ERROR! there is more than 1 win/los record (WinLossRecord\n For fighters #{fa.name} and #{fb.name}"
+    end
+    return rec.first
   end
 end

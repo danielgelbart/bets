@@ -6,6 +6,27 @@ require 'open-uri'
 namespace :get_data do
 
   desc "Replace fighters with less than 5 fights"
+  task :get_fight_card => :environment do |task, args|
+    url = "http://www.sherdog.com/events/UFC-Fight-Night-Hunt-vs-Nelson-37745"
+
+    log = File.new("get_fight_card.log","w+")
+    log.puts "Getting fighter data for card: \n #{url}\n"
+    Spider.set_recursion_depth(6)
+    spider = Spider.new(log)
+
+    #TODO
+    fights = get_matchups(url)
+    fights.each do |f|
+      fa,fb = get_figher_links(f)
+      Spider.restart_count
+      get_recursive(fa)
+      Spider.restart_count
+      get_recursive(fb)
+    end
+    log.close
+  end
+
+  desc "Replace fighters with less than 5 fights"
   task :clean => :environment do |task, args|
 
     uf = Fighter.find_by_name("Unranked Fighter")
@@ -98,28 +119,41 @@ end # namdspace
 
 class Spider
 
-  attr_accessor :log
-
-  def initialize(log)
-    @log = log
-  end
-
   @@count = 0
+  @@depth = 6
+
+  def self.restart_count
+    @@count =0
+  end
 
   def self.add_to_count
     @@count += 1
+  end
+
+  def self.lim
+    @@depth
   end
 
   def self.count
     @@count
   end
 
+  def self.set_recursion_depth(depth)
+    @@depth = depth
+  end
+
+  attr_accessor :log
+
+  def initialize(log)
+    @log = log
+  end
+
   def get_recursive(url)
     log.puts "get_recursive called with url: #{url}"
 
-    lim = 100
-    if Spider.count > lim
-      log.puts puts "Reached run limit of #{lim} at #{url}"
+
+    if Spider.count > Spider.lim
+      log.puts puts "Reached run limit of #{Spider.lim} at #{url}"
       return
     else
       puts "This is the #{ Spider.add_to_count }th recursive call"
@@ -215,16 +249,20 @@ class Spider
 
     # if exists - update
     if fr.nil?
-      fr = WinLossRecord.create()
+      fr = WinLossRecord.create( fighterA_id: winner.id,
+                                 fighterB_id: loser.id,
+                                 winA: 1,
+                                 winB: 0)
     else
       # check wich field to update
-
-      #update
-
+      if (fr.fighterA == winner)
+        fr.update_attribute(:winA, (fr.winA+1))
+      else
+        fr.update_attribute(:winB, (fr.winB+1))
+      end
     end
-
-    # if not create new won correctly
   end
+
 
 
   def add_fight_to_db(fighter,rec)

@@ -1,9 +1,8 @@
-1. Adjust rake task to count win/lossese of fighters to write directly to DB
-   so that it acts also as update win/lossese
-   - Finish method
+1. Finish url parsing for
+  - Implement rake task to update from upcomming fight card
+
 3. BUG - data incorect due to removeing 'done' flag in readiing unranked fighter
          fights a second time. REDO ALL DATA
-4. Implement rake task to update from upcomming fight card
 5. Implement rake task to update results from past fight card
 
  (Only at end go to improve)
