@@ -1,3 +1,16 @@
+# == Schema Information
+#
+# Table name: win_loss_records
+#
+#  id          :integer          not null, primary key
+#  fighterA_id :integer
+#  fighterB_id :integer
+#  winA        :integer          default(0)
+#  winB        :integer          default(0)
+#  created_at  :datetime
+#  updated_at  :datetime
+#
+
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:

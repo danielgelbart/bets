@@ -15,8 +15,8 @@ class Fighter < ActiveRecord::Base
   validates_presence_of :name
   validates_uniqueness_of :name
 
-  has_many :wins, foreign_key: 'winner_id', class_name: 'Fight'
-  has_many :loses, foreign_key: 'loser_id', class_name: 'Fight'
+  has_many :_wins, foreign_key: 'winner_id', class_name: 'Fight'
+  has_many :_loses, foreign_key: 'loser_id', class_name: 'Fight'
 
   has_many :wlrecordsA, foreign_key: 'FighterA_id', class_name: 'WinLossRecord'
   has_many :wlrecordsB, foreign_key: 'FighterB_id', class_name: 'WinLossRecord'
@@ -24,6 +24,15 @@ class Fighter < ActiveRecord::Base
   def wlrecords
     wlrecordsA + wlrecordsB
   end
+
+  def wins
+    _wins.select{ |w| w.nonwin == 'win' }
+  end
+
+  def loses
+    _loses.select{ |w| w.nonwin == 'win' }
+  end
+
 
   def fights
     wins + loses

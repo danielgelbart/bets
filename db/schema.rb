@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140702123359) do
+ActiveRecord::Schema.define(version: 20140715174320) do
 
   create_table "fighters", force: true do |t|
     t.string   "name"
@@ -39,5 +39,14 @@ ActiveRecord::Schema.define(version: 20140702123359) do
   end
 
   add_index "fights", ["winner_id", "loser_id", "date"], name: "index_fights_on_winner_id_and_loser_id_and_date", using: :btree
+
+  create_table "win_loss_records", force: true do |t|
+    t.integer  "fighterA_id"
+    t.integer  "fighterB_id"
+    t.integer  "winA",        default: 0
+    t.integer  "winB",        default: 0
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
 end

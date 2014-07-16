@@ -20,9 +20,11 @@ class Fight < ActiveRecord::Base
   validates_presence_of :winner, :loser, :date
   enum nonwin: [ :win, :draw, :nocontest ]
 
-  #named_scope :fighters, {include: [:winner, :loser]}
-
   belongs_to :winner, foreign_key: 'winner_id', class_name: 'Fighter'
   belongs_to :loser, foreign_key: 'loser_id', class_name: 'Fighter'
+
+  def fighters
+    winner + loser
+  end
 
 end

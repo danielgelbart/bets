@@ -209,6 +209,23 @@ class Spider
     fight_records = extract_records(fight_table)
   end
 
+  def update_fight_record(winner, loser)
+    # Look for existing fight record between both fighters
+    fr = WinLossRecord.get_record(winner, loser)
+
+    # if exists - update
+    if fr.nil?
+      fr = WinLossRecord.create()
+    else
+      # check wich field to update
+
+      #update
+
+    end
+
+    # if not create new won correctly
+  end
+
 
   def add_fight_to_db(fighter,rec)
     cols = rec.css('/td')
@@ -288,9 +305,15 @@ class Spider
                           time: time )
 
     if fight.id.nil?
-      log.puts "Did not add fight for #{fighter.name} from #{date.to_s}"
+      log.puts puts"Did not add fight for #{fighter.name} from #{date.to_s}"
     else
-      log.puts "Added fight for  #{fighter.name} from #{date.to_s}"
+      log.puts puts"Added fight for  #{fighter.name} from #{date.to_s}"
+      # ONLY update fight record if this is a new fight
+      if nocontest == 0 # fight ended with a win, not a draw
+        update_fight_record(winner, loser)
+        log.puts puts"Updated fight record with a #{winner == fighter ? "win":"loss"} for fight dated #{fight.date}"
+      end
+
     end
   end
 
