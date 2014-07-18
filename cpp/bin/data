@@ -1,11 +1,11 @@
-fighter1 fighter2 win1 win2
-1 A B 0 1
-2 A C 2 1
-3 A D 1 0
-4 D C 0 2
-5 B D 1 0
-6 C A 1 2
-7 B C 1 0
-8 E A 1 1
-9 E D 1 0
-10 B E 0 2
+fighter1, fighter2, win1, win2
+1, Aanderson Silva, Benni Dan, 0, 1
+2, Aanderson Silva, Carlos condit, 2, 1
+3, Aanderson Silva, Dani Gelbart, 1, 0
+4, Dani Gelbart, Carlos condit, 0, 2
+5, Benni Dan, Dani Gelbart, 1, 0
+6, Carlos condit, Aanderson Silva, 1, 2
+7, Benni Dan, Carlos condit, 1, 0
+8, Emi Swanson, Aanderson Silva, 1, 1
+9, Emi Swanson, Dani Gelbart, 1, 0
+10, Benni Dan, Emi Swanson, 0, 2

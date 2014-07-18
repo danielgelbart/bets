@@ -6,23 +6,19 @@ require 'open-uri'
 namespace :get_data do
 
   desc "Replace fighters with less than 5 fights"
-  task :get_fight_card => :environment do |task, args|
-    url = "http://www.sherdog.com/events/UFC-Fight-Night-Hunt-vs-Nelson-37745"
+  task :fight_card => :environment do |task, args|
+    url = "http://www.sherdog.com/events/UFC-Fight-Night-McGregor-vs-Brandao-36425"
 
     log = File.new("get_fight_card.log","w+")
     log.puts "Getting fighter data for card: \n #{url}\n"
     Spider.set_recursion_depth(6)
     spider = Spider.new(log)
 
-    #TODO
-    fights = get_matchups(url)
-    fights.each do |f|
-      fa,fb = get_figher_links(f)
-      Spider.restart_count
-      get_recursive(fa)
-      Spider.restart_count
-      get_recursive(fb)
-    end
+    # Make sure the unranked fighter exists
+    uf = Fighter.find_or_create_by( name: "Unranked Fighter")
+
+    spider.get_fighter_data_for_fight_card(url)
+
     log.close
   end
 
@@ -73,11 +69,6 @@ namespace :get_data do
 
   end
 
-  desc "Update fighters from upcoming fight card"
-  task :up_card => :environment do |task, args|
-
-  end
-
   desc "Try to mark as full full data fighters"
   task :mark_full => :environment do |task, args|
     non_full_fighters = Fighter.where( full_data: false)
@@ -86,7 +77,7 @@ namespace :get_data do
 
     non_full_fighters.each do |f|
       if !f.url.nil?
-        spider.get_recursive(f.url)
+        spider.get_recursive(f.url,false)
       end
     end
     log.close
@@ -101,8 +92,11 @@ namespace :get_data do
 
     log = File.new("fights_rake.log","w+")
 
+    # Make sure the unranked fighter exists
+    uf = Fighter.find_or_create_by( name: "Unranked Fighter")
+
     spider = Spider.new(log)
-    spider.get_recursive(url)
+    spider.get_recursive(url,true)
 
     for_delete = Fighter.where( for_delete: true)
 
@@ -148,7 +142,7 @@ class Spider
     @log = log
   end
 
-  def get_recursive(url)
+  def get_recursive(url,continue_recursion)
     log.puts "get_recursive called with url: #{url}"
 
 
@@ -191,7 +185,6 @@ class Spider
 
     fighter = Fighter.find_or_create_by(name: fighter_name)
 
-
     if fighter.url.nil?
       fighter.url = url
       fighter.save
@@ -232,10 +225,36 @@ class Spider
 
     # Iterate over fights and make recursive call
     fight_records.each do |fight_rec|
-      get_recursive(extract_url(fight_rec))
+      Spider.restart_count if continue_recursion
+      get_recursive(extract_url(fight_rec,1), false)
     end
 
     puts "EXITED Recursive call from #{fighter.name}"
+  end
+
+  def get_fighter_data_for_fight_card(url)
+    fights = fights_on_card(url)
+    fights.each do |f|
+      # get data for first aponent
+      fighter_link = extract_url(f,1)
+      Spider.restart_count
+      get_recursive(fighter_link,true)
+
+      #get data for second aponent
+      fighter_link = extract_url(f,3)
+      Spider.restart_count
+      get_recursive(fighter_link,true)
+    end
+  end
+
+  def fights_on_card(url)
+    fights = get_fights_from_link(open_doc(url))
+    fights.shift # get rid of header
+    fights
+  end
+
+  def get_fights_from_link(html)
+    html.css('//table/tr')
   end
 
   def get_fight_records_from_link(url)
@@ -262,8 +281,6 @@ class Spider
       end
     end
   end
-
-
 
   def add_fight_to_db(fighter,rec)
     cols = rec.css('/td')
@@ -292,7 +309,7 @@ class Spider
     end
 
     if count_records && oponent_fight_num(rec) < 6
-      oponent = Fighter.find_by_name("Unranked Fighter")
+      oponent = uf
       log.puts puts "Using Unranked Fighter insted of #{oponent_name} to save DB space"
     else
       # add opponenet to db if not already there
@@ -329,7 +346,6 @@ class Spider
     round = cols[4].text.to_i
     time =  cols[5].text.gsub(":","").to_i
 
-
     # Note - we will try to create the fight record exactly twice,
     # once for the winner, and once for the lower.
     # make sure that it is only created once by validation on Fight model
@@ -341,7 +357,6 @@ class Spider
                           finish: finish,
                           round: round,
                           time: time )
-
     if fight.id.nil?
       log.puts puts"Did not add fight for #{fighter.name} from #{date.to_s}"
     else
@@ -370,14 +385,14 @@ class Spider
       end
     end
 
-    op_link = extract_url(rec)
+    op_link = extract_url(rec,1)
     fight_records = get_fight_records_from_link(op_link)
     fight_records.size
   end
 
-  def extract_url(rec)
+  def extract_url(rec,i)
     cols = rec.css('/td')
-    rel_path = cols[1].css('a').first.attr('href')
+    rel_path = cols[i].css('a').first.attr('href')
     "http://www.sherdog.com"+rel_path
   end
 

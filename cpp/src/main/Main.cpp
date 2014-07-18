@@ -63,9 +63,6 @@ run_mle(int argc, char* argv[])
 
     // initialize R
     RInside R(argc, argv); 
-    R["txt"] = "Hello, world!\n"; // assign a char* (string) to 'txt'
-    R.parseEvalQ("cat(txt)");  
-
 
     // load BradleyTerry library
     // load data to R object
@@ -74,7 +71,7 @@ run_mle(int argc, char* argv[])
 
     std::string str = 
         "cat('Requireing libraray\n');library('BradleyTerry2'); "
-        "cat('Loading data from file\n'); data <- read.table('data') ; "
+        "cat('Loading data from file\n'); data <- read.table('data',sep=',') ; "
         "cat('Running BTm()\n');fighterModel <- BTm(cbind(win1, win2), fighter1, fighter2, ~ fighter, id='fighter', data=data) ; "
         "BTabilities(fighterModel)"; // returns a matrix of two colums: fighter; ability
     

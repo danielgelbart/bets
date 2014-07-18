@@ -33,9 +33,9 @@ class Fighter < ActiveRecord::Base
     _loses.select{ |w| w.nonwin == 'win' }
   end
 
-
+  #Returns wins + loses + draws + nocontests
   def fights
-    wins + loses
+    _wins + _loses
   end
 
   def has_full_data?
